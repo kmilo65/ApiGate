@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabaseClient';
 
 export default function useApiKeys() {
   const [apiKeys, setApiKeys] = useState([]);
@@ -7,16 +6,14 @@ export default function useApiKeys() {
   const [error, setError] = useState(null);
   const [editingKey, setEditingKey] = useState(null);
 
-  // Fetch API keys from Supabase
+  // Fetch API keys from REST endpoint
   const fetchApiKeys = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const { data, error } = await supabase
-        .from('api_keys')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
+      const res = await fetch('/api', { method: 'GET' });
+      if (!res.ok) throw new Error('Failed to fetch API keys');
+      const data = await res.json();
       setApiKeys(data || []);
     } catch (err) {
       setError('Failed to load API keys');
@@ -29,27 +26,17 @@ export default function useApiKeys() {
     fetchApiKeys();
   }, []);
 
-  const generateApiKey = () => {
-    return `pk_${Math.random().toString(36).substr(2, 9)}_${Date.now().toString(36)}`;
-  };
-
   const createApiKey = async (formData) => {
     try {
       setError(null);
-      const newKey = {
-        name: formData.name,
-        key: generateApiKey(),
-        description: formData.description,
-        permissions: formData.permissions,
-        created_at: new Date().toISOString().split('T')[0],
-        last_used: new Date().toISOString().split('T')[0]
-      };
-      const { data, error } = await supabase
-        .from('api_keys')
-        .insert([newKey])
-        .select();
-      if (error) throw error;
-      setApiKeys([data[0], ...apiKeys]);
+      const res = await fetch('/api', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error('Failed to create API key');
+      const data = await res.json();
+      setApiKeys([data, ...apiKeys]);
       return { success: true };
     } catch (err) {
       setError('Failed to create API key');
@@ -60,15 +47,12 @@ export default function useApiKeys() {
   const updateApiKey = async (id, formData) => {
     try {
       setError(null);
-      const { error } = await supabase
-        .from('api_keys')
-        .update({
-          name: formData.name,
-          description: formData.description,
-          permissions: formData.permissions
-        })
-        .eq('id', id);
-      if (error) throw error;
+      const res = await fetch('/api', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...formData }),
+      });
+      if (!res.ok) throw new Error('Failed to update API key');
       setApiKeys(apiKeys.map(key => key.id === id ? { ...key, ...formData } : key));
       return { success: true };
     } catch (err) {
@@ -80,16 +64,33 @@ export default function useApiKeys() {
   const deleteApiKey = async (id) => {
     try {
       setError(null);
-      const { error } = await supabase
-        .from('api_keys')
-        .delete()
-        .eq('id', id);
-      if (error) throw error;
+      const res = await fetch('/api', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) throw new Error('Failed to delete API key');
       setApiKeys(apiKeys.filter(key => key.id !== id));
       return { success: true };
     } catch (err) {
       setError('Failed to delete API key');
       return { success: false };
+    }
+  };
+
+  // Validate API Key using the REST endpoint
+  const validateApiKey = async (apiKey) => {
+    try {
+      const res = await fetch('/api/validate-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey }),
+      });
+      if (!res.ok) return false;
+      const result = await res.json();
+      return result.valid;
+    } catch (err) {
+      return false;
     }
   };
 
@@ -104,5 +105,6 @@ export default function useApiKeys() {
     deleteApiKey,
     editingKey,
     setEditingKey,
+    validateApiKey, // <-- add this
   };
 } 

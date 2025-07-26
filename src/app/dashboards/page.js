@@ -65,6 +65,12 @@ export default function Dashboard() {
     if (!confirm('Are you sure you want to delete this API key?')) {
       return;
     }
+    const result = await deleteApiKey(id);
+    if (result.success) {
+      showNotification("API Key deleted successfully!", "success");
+    } else {
+      showNotification("Failed to delete API key. Please try again.", "error");
+    }
   };
 
   // Edit handler
