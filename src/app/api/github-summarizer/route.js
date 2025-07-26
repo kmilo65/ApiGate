@@ -5,11 +5,11 @@ export async function POST(request) {
     // Parse and validate request body
     const body = await request.json();
     
-    if (!body || !body.apiKey) {
+    if (!body || !body.gitHubUrl) {
       return new Response(
         JSON.stringify({ 
-          error: 'API key is required',
-          valid: false 
+          error: 'GitHub URL is required',
+          success: false 
         }), 
         { 
           status: 400,
@@ -20,14 +20,66 @@ export async function POST(request) {
       );
     }
 
-    const { apiKey } = body;
+    const { gitHubUrl } = body;
+
+    // Validate GitHub URL format with specific pattern
+    const githubUrlPattern = /^https:\/\/github\.com\/[a-zA-Z0-9-]+\/[a-zA-Z0-9-._]+$/;
+    if (typeof gitHubUrl !== 'string' || gitHubUrl.trim().length === 0) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid GitHub URL format',
+          success: false 
+        }), 
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+
+    const cleanGitHubUrl = gitHubUrl.trim();
+    
+    if (!githubUrlPattern.test(cleanGitHubUrl)) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid GitHub URL format. Expected: https://github.com/username/repository',
+          success: false 
+        }), 
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+
+    // Extract API key from x-api-key header
+    const apiKey = request.headers.get('x-api-key');
+    
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'API key is required in x-api-key header',
+          success: false 
+        }), 
+        { 
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
 
     // Validate API key format (basic validation)
     if (typeof apiKey !== 'string' || apiKey.trim().length === 0) {
       return new Response(
         JSON.stringify({ 
           error: 'Invalid API key format',
-          valid: false 
+          success: false 
         }), 
         { 
           status: 400,
@@ -38,11 +90,13 @@ export async function POST(request) {
       );
     }
 
+    const cleanApiKey = apiKey.trim();
+
     // Query Supabase for API key validation
     const { data, error } = await supabase
       .from('api_keys')
       .select('id, name, permissions, last_used')
-      .eq('key', apiKey.trim())
+      .eq('key', cleanApiKey)
       .single();
 
     // Handle Supabase errors
@@ -55,7 +109,7 @@ export async function POST(request) {
         return new Response(
           JSON.stringify({ 
             error: 'Invalid API key',
-            valid: false 
+            success: false 
           }), 
           { 
             status: 401,
@@ -70,7 +124,7 @@ export async function POST(request) {
       return new Response(
         JSON.stringify({ 
           error: 'Database error occurred',
-          valid: false 
+          success: false 
         }), 
         { 
           status: 500,
@@ -83,7 +137,7 @@ export async function POST(request) {
 
     // API key is valid
     if (data && data.id) {
-      // Update last_used timestamp (optional)
+      // Update last_used timestamp
       try {
         await supabase
           .from('api_keys')
@@ -94,14 +148,27 @@ export async function POST(request) {
         console.warn('Failed to update last_used timestamp:', updateError);
       }
 
+      // TODO: Add GitHub summarization logic here
+      // This is where you'll implement the actual GitHub URL summarization
+      // You can use libraries like:
+      // - GitHub API to fetch repository information
+      // - AI/ML models for summarization
+      // - Web scraping for additional context
+      // - Integration with external summarization services
+
+      // For now, return a placeholder response
       return new Response(
         JSON.stringify({ 
-          valid: true,
-          message: 'Valid API key',
-          keyInfo: {
-            id: data.id,
-            name: data.name,
-            permissions: data.permissions
+          success: true,
+          message: 'GitHub summarization endpoint ready',
+          data: {
+            gitHubUrl: gitHubUrl,
+            apiKeyInfo: {
+              id: data.id,
+              name: data.name,
+              permissions: data.permissions
+            },
+            summary: 'TODO: Implement GitHub summarization logic'
           }
         }), 
         { 
@@ -117,7 +184,7 @@ export async function POST(request) {
     return new Response(
       JSON.stringify({ 
         error: 'Invalid API key',
-        valid: false 
+        success: false 
       }), 
       { 
         status: 401,
@@ -128,14 +195,14 @@ export async function POST(request) {
     );
 
   } catch (error) {
-    console.error('API route error:', error);
+    console.error('GitHub summarizer API route error:', error);
     
     // Handle JSON parsing errors
     if (error instanceof SyntaxError) {
       return new Response(
         JSON.stringify({ 
           error: 'Invalid JSON in request body',
-          valid: false 
+          success: false 
         }), 
         { 
           status: 400,
@@ -150,7 +217,7 @@ export async function POST(request) {
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',
-        valid: false 
+        success: false 
       }), 
       { 
         status: 500,

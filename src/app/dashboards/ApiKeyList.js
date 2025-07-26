@@ -1,13 +1,16 @@
 import React from 'react';
 
 export default function ApiKeyList({ apiKeys, onCopy, onEdit, onDelete }) {
+  // Ensure apiKeys is always an array
+  const safeApiKeys = Array.isArray(apiKeys) ? apiKeys : [];
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900">Your API Keys</h2>
       </div>
       <div className="divide-y divide-gray-200">
-        {apiKeys.map((apiKey) => (
+        {safeApiKeys.map((apiKey) => (
           <div key={apiKey.id} className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
@@ -24,7 +27,7 @@ export default function ApiKeyList({ apiKeys, onCopy, onEdit, onDelete }) {
                 </div>
                 <div className="mt-2 flex items-center space-x-2">
                   <span className="text-sm font-medium text-gray-700">Permissions:</span>
-                  {apiKey.permissions && apiKey.permissions.map(permission => (
+                  {apiKey.permissions && Array.isArray(apiKey.permissions) && apiKey.permissions.map(permission => (
                     <span
                       key={permission}
                       className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800"
@@ -82,7 +85,7 @@ export default function ApiKeyList({ apiKeys, onCopy, onEdit, onDelete }) {
           </div>
         ))}
       </div>
-      {apiKeys.length === 0 && (
+      {safeApiKeys.length === 0 && (
         <div className="p-6 text-center text-gray-500">
           No API keys found. Create your first API key to get started.
         </div>
