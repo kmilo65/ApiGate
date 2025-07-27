@@ -108,7 +108,7 @@ export default function Dashboard() {
         `}
       />
       {/* Main Content */}
-      <div className="flex-1 ml-0">
+      <div className={`flex-1 transition-all duration-300 ${showSidebar ? 'ml-64' : 'ml-0'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Upper Menu/Header */}
           <div className="flex items-center justify-between mb-8">

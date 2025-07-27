@@ -1,4 +1,5 @@
 import { supabase } from '../../../lib/supabaseClient';
+import { summarizeReadme } from '../summarizer.js';
 
 export async function POST(request) {
   try {
@@ -157,19 +158,49 @@ export async function POST(request) {
       // - Integration with external summarization services
 
       // For now, return a placeholder response
+
+      // Helper function to fetch README.md content from a GitHub repo
+      async function fetchReadmeFromGitHub(gitHubUrl) {
+        try {
+          // Extract owner and repo from the URL
+          const match = gitHubUrl.match(/^https:\/\/github\.com\/([^\/]+)\/([^\/]+)(\/|$)/);
+          if (!match) return null;
+          const owner = match[1];
+          const repo = match[2];
+
+          // Try to fetch README from main branch, then fallback to master
+          const branches = ['main', 'master'];
+          for (const branch of branches) {
+            const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/README.md`;
+            const res = await fetch(rawUrl);
+            if (res.ok) {
+              return await res.text();
+            }
+          }
+          // If not found, return null
+          return null;
+        } catch (err) {
+          console.error('Error fetching README.md:', err);
+          return null;
+        }
+      }
+
+      // Fetch the README.md content
+      const readmeText = await fetchReadmeFromGitHub(gitHubUrl);
+
+      // Print README.md text to console
+      console.log('=== README.md Content ===');
+      console.log(readmeText || 'No README.md found');
+      console.log('=== End README.md Content ===');
+
+      // Summarize the README content
+      const { summary, cool_facts } = await summarizeReadme(readmeText);
+      
       return new Response(
         JSON.stringify({ 
-          success: true,
-          message: 'GitHub summarization endpoint ready',
-          data: {
-            gitHubUrl: gitHubUrl,
-            apiKeyInfo: {
-              id: data.id,
-              name: data.name,
-              permissions: data.permissions
-            },
-            summary: 'TODO: Implement GitHub summarization logic'
-          }
+          message: 'GitHub summarization completed successfully',
+          summary: summary,
+          cool_facts: cool_facts
         }), 
         { 
           status: 200,
