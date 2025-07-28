@@ -1,6 +1,9 @@
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
+import SessionProvider from "@/components/SessionProvider";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -12,12 +15,16 @@ const robotoMono = Roboto_Mono({
   subsets: ["latin"],
 });
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en">
-      <body >
-      <Toaster position="top-right" />
-        {children}
+      <body className={`${inter.variable} ${robotoMono.variable}`}>
+        <SessionProvider session={session}>
+          <Toaster position="top-right" />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

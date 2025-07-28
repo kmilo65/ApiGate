@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from "next/link";
 import Notification from "@/app/components/Notification";
 import Sidebar from "@/app/components/Sidebar";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import useApiKeys from './useApiKeys';
 import useNotification from './useNotification';
 import ApiKeyList from './ApiKeyList';
@@ -100,15 +101,16 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
-      {/* Sidebar - absolute and animated */}
-      <Sidebar
-        className={`fixed top-0 left-0 h-full transition-transform duration-300 z-40
-          ${showSidebar ? 'translate-x-0' : '-translate-x-full'}
-        `}
-      />
-      {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${showSidebar ? 'ml-64' : 'ml-0'}`}>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50 relative">
+        {/* Sidebar - absolute and animated */}
+        <Sidebar
+          className={`fixed top-0 left-0 h-full transition-transform duration-300 z-40
+            ${showSidebar ? 'translate-x-0' : '-translate-x-full'}
+          `}
+        />
+        {/* Main Content */}
+        <div className={`flex-1 transition-all duration-300 ${showSidebar ? 'ml-64' : 'ml-0'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Upper Menu/Header */}
           <div className="flex items-center justify-between mb-8">
@@ -211,5 +213,6 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 } 
