@@ -1,4 +1,4 @@
-import { supabase } from '../../../lib/supabaseClient';
+import { supabase } from '../../lib/supabaseClient';
 import { summarizeReadme } from '../summarizer.js';
 
 export async function POST(request) {
