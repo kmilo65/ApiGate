@@ -1,9 +1,9 @@
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
-import SessionProvider from "@/components/SessionProvider";
+import SessionProvider from "@/app/components/SessionProvider";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/app/lib/auth";
 
 const inter = Inter({
   variable: "--font-inter",

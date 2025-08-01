@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Github } from "lucide-react"
 import Link from "next/link"
@@ -8,6 +9,7 @@ import { AuthModal } from "./auth-modal"
 
 export function Header() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const { data: session, status } = useSession()
 
   return (
     <>
@@ -37,12 +39,26 @@ export function Header() {
               <Link href="#dashboard" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
                 Dashboard
               </Link>
-              <Button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-              >
-                Sign Up
-              </Button>
+              
+              {session ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-gray-700">
+                    {session.user?.name || session.user?.email}
+                  </span>
+                  <Link href="/dashboards">
+                    <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+                      Dashboard
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                >
+                  Sign Up
+                </Button>
+              )}
             </nav>
           </div>
         </div>

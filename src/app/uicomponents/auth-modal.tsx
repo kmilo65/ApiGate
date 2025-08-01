@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -16,20 +17,24 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   const handleGoogleAuth = async () => {
     setIsLoading("google")
-    // Simulate authentication process
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsLoading(null)
-    // Here you would integrate with your actual Google OAuth
-    console.log("Google authentication initiated")
+    try {
+      await signIn("google", { callbackUrl: "/dashboards" })
+    } catch (error) {
+      console.error("Google sign in error:", error)
+    } finally {
+      setIsLoading(null)
+    }
   }
 
   const handleGithubAuth = async () => {
     setIsLoading("github")
-    // Simulate authentication process
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsLoading(null)
-    // Here you would integrate with your actual GitHub OAuth
-    console.log("GitHub authentication initiated")
+    try {
+      await signIn("github", { callbackUrl: "/dashboards" })
+    } catch (error) {
+      console.error("GitHub sign in error:", error)
+    } finally {
+      setIsLoading(null)
+    }
   }
 
   if (!isOpen) return null

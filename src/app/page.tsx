@@ -1,9 +1,9 @@
-import { Header } from "@/uicomponents/header"
-import { Hero } from "@/uicomponents/hero"
-import { Features } from "@/uicomponents/features"
-import { ApiDemo } from "@/uicomponents/api-demo"
-import { Pricing } from "@/uicomponents/pricing"
-import { Footer } from "@/uicomponents/footer"
+import { Header } from "@/app/uicomponents/header"
+import { Hero } from "@/app/uicomponents/hero"
+import { Features } from "@/app/uicomponents/features"
+import { ApiDemo } from "@/app/uicomponents/api-demo"
+import { Pricing } from "@/app/uicomponents/pricing"
+import { Footer } from "@/app/uicomponents/footer"
 
 export default function LandingPage() {
   return (
