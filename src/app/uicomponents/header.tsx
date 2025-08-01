@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
-import { Github } from "lucide-react"
+import { Github, LogOut } from "lucide-react"
 import Link from "next/link"
 import { AuthModal } from "./auth-modal"
 
@@ -40,16 +40,27 @@ export function Header() {
                 Dashboard
               </Link>
               
+              {/* Authentication Section */}
               {session ? (
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-gray-700">
-                    {session.user?.name || session.user?.email}
-                  </span>
-                  <Link href="/dashboards">
-                    <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
-                      Dashboard
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    {session.user?.image && (
+                      <img
+                        src={session.user.image}
+                        alt={session.user.name}
+                        className="w-8 h-8 rounded-full"
+                      />
+                    )}
+                    <span className="text-sm font-medium text-gray-700">
+                      {session.user?.name || session.user?.email}
+                    </span>
+                  </div>
+                  <Button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                  >
+                    Sign Out
+                  </Button>
                 </div>
               ) : (
                 <Button

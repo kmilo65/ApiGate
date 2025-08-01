@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from "next/link";
 import Notification from "@/app/components/Notification";
 import Sidebar from "@/app/components/Sidebar";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedRoute from "@/app/components/ProtectedRoute";
 import useApiKeys from './useApiKeys';
 import useNotification from './useNotification';
 import ApiKeyList from './ApiKeyList';
