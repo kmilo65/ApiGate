@@ -30,8 +30,14 @@ export default function Dashboard() {
     setEditingKey,
   } = useApiKeys();
   const { notification, showNotification, clearNotification } = useNotification();
-  const { getThemeColors } = useTheme();
+  const { getThemeColors, currentTheme } = useTheme();
   const themeColors = getThemeColors();
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Dashboard: Theme colors updated", themeColors)
+    console.log("Dashboard: Current theme", currentTheme)
+  }, [themeColors, currentTheme])
 
   // Handle escape key to close sidebar
   useEffect(() => {
@@ -173,6 +179,12 @@ export default function Dashboard() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 relative">
+        {/* Debug Info - Remove this later */}
+        <div className="fixed top-4 left-4 bg-white p-2 rounded shadow z-50 text-xs">
+          <div>Current Theme: {currentTheme}</div>
+          <div>Primary: {themeColors.primary}</div>
+        </div>
+
         {/* Mobile overlay for sidebar */}
         {showSidebar && (
           <div 

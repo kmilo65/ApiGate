@@ -2,10 +2,16 @@
 
 import Link from "next/link"
 import { useTheme } from "@/app/contexts/ThemeContext"
+import { useEffect } from "react"
 
 export default function Sidebar({ className = "" }) {
   const { getThemeColors } = useTheme()
   const themeColors = getThemeColors()
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Sidebar: Theme colors updated", themeColors)
+  }, [themeColors])
 
   const getThemeGradient = () => {
     switch (themeColors.primary) {

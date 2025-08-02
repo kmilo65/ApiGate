@@ -56,22 +56,29 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [currentTheme, setCurrentTheme] = useState<Theme>("orange")
 
   const setTheme = (theme: Theme) => {
+    console.log("ThemeProvider: Setting theme to", theme)
     setCurrentTheme(theme)
     // Store theme preference in localStorage
     localStorage.setItem("theme", theme)
   }
 
   const getThemeColors = (): ThemeColors => {
+    console.log("ThemeProvider: Getting colors for theme", currentTheme)
     return themes[currentTheme]
   }
 
   useEffect(() => {
     // Load theme from localStorage on mount
     const savedTheme = localStorage.getItem("theme") as Theme
+    console.log("ThemeProvider: Loading saved theme", savedTheme)
     if (savedTheme && themes[savedTheme]) {
       setCurrentTheme(savedTheme)
     }
   }, [])
+
+  useEffect(() => {
+    console.log("ThemeProvider: Theme changed to", currentTheme)
+  }, [currentTheme])
 
   return (
     <ThemeContext.Provider value={{ currentTheme, setTheme, getThemeColors }}>

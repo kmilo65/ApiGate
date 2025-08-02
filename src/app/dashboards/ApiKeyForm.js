@@ -1,6 +1,51 @@
+"use client"
+
 import React from 'react';
+import { useTheme } from '@/app/contexts/ThemeContext';
 
 export default function ApiKeyForm({ formData, setFormData, onSubmit, onCancel, editingKey }) {
+  const { getThemeColors } = useTheme();
+  const themeColors = getThemeColors();
+
+  const getThemeFocus = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "focus:ring-amber-500 focus:border-amber-500"
+      case "from-blue-500 to-cyan-500":
+        return "focus:ring-blue-500 focus:border-blue-500"
+      case "from-green-500 to-emerald-500":
+        return "focus:ring-green-500 focus:border-green-500"
+      default:
+        return "focus:ring-amber-500 focus:border-amber-500"
+    }
+  }
+
+  const getThemeButton = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+      case "from-blue-500 to-cyan-500":
+        return "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+      case "from-green-500 to-emerald-500":
+        return "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+      default:
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+    }
+  }
+
+  const getThemeCheckbox = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "text-amber-600 focus:ring-amber-500"
+      case "from-blue-500 to-cyan-500":
+        return "text-blue-600 focus:ring-blue-500"
+      case "from-green-500 to-emerald-500":
+        return "text-green-600 focus:ring-green-500"
+      default:
+        return "text-amber-600 focus:ring-amber-500"
+    }
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
       <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">
@@ -15,7 +60,7 @@ export default function ApiKeyForm({ formData, setFormData, onSubmit, onCancel, 
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm sm:text-base transition-colors"
+            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 ${getThemeFocus()} text-sm sm:text-base transition-colors`}
             placeholder="Enter API key name"
           />
         </div>
@@ -26,7 +71,7 @@ export default function ApiKeyForm({ formData, setFormData, onSubmit, onCancel, 
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm sm:text-base transition-colors"
+            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 ${getThemeFocus()} text-sm sm:text-base transition-colors`}
             rows="3"
             placeholder="Enter description"
           />
@@ -54,7 +99,7 @@ export default function ApiKeyForm({ formData, setFormData, onSubmit, onCancel, 
                       });
                     }
                   }}
-                  className="mr-2 text-amber-600 focus:ring-amber-500"
+                  className={`mr-2 ${getThemeCheckbox()}`}
                 />
                 <span className="capitalize text-sm sm:text-base text-gray-700">{permission}</span>
               </label>
@@ -64,7 +109,7 @@ export default function ApiKeyForm({ formData, setFormData, onSubmit, onCancel, 
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
           <button
             onClick={onSubmit}
-            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto shadow-lg hover:shadow-xl"
+            className={`${getThemeButton()} text-white font-medium py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto shadow-lg hover:shadow-xl`}
           >
             {editingKey ? 'Update' : 'Create'}
           </button>
