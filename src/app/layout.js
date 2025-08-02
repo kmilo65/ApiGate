@@ -20,9 +20,21 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${robotoMono.variable}`}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      </head>
+      <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <SessionProvider session={session}>
-          <Toaster position="top-right" />
+          <Toaster 
+            position="top-right" 
+            toastOptions={{
+              duration: 4000,
+              style: {
+                fontSize: '14px',
+                maxWidth: '90vw',
+              },
+            }}
+          />
           {children}
         </SessionProvider>
       </body>
