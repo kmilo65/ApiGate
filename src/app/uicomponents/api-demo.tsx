@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Loader2, Play, Book, Copy, Check } from "lucide-react"
+import { useTheme } from "@/app/contexts/ThemeContext"
 
 const defaultRequest = `{
   "githubUrl": "https://github.com/assafelovic/gpt-researcher"
@@ -40,6 +41,112 @@ export function ApiDemo() {
   const [response, setResponse] = useState(defaultResponse)
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const { getThemeColors } = useTheme()
+  const themeColors = getThemeColors()
+
+  const getThemeGradient = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-500 to-orange-500"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-500 to-cyan-500"
+      case "from-green-500 to-emerald-500":
+        return "from-green-500 to-emerald-500"
+      default:
+        return "from-amber-500 to-orange-500"
+    }
+  }
+
+  const getThemeBg = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-100 to-orange-100"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-100 to-cyan-100"
+      case "from-green-500 to-emerald-500":
+        return "from-green-100 to-emerald-100"
+      default:
+        return "from-amber-100 to-orange-100"
+    }
+  }
+
+  const getThemeBorder = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "border-amber-200"
+      case "from-blue-500 to-cyan-500":
+        return "border-blue-200"
+      case "from-green-500 to-emerald-500":
+        return "border-green-200"
+      default:
+        return "border-amber-200"
+    }
+  }
+
+  const getThemeText = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "text-amber-800"
+      case "from-blue-500 to-cyan-500":
+        return "text-blue-800"
+      case "from-green-500 to-emerald-500":
+        return "text-green-800"
+      default:
+        return "text-amber-800"
+    }
+  }
+
+  const getThemeHover = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "hover:border-amber-200"
+      case "from-blue-500 to-cyan-500":
+        return "hover:border-blue-200"
+      case "from-green-500 to-emerald-500":
+        return "hover:border-green-200"
+      default:
+        return "hover:border-amber-200"
+    }
+  }
+
+  const getThemeFocus = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "focus:border-amber-500 focus:ring-amber-500"
+      case "from-blue-500 to-cyan-500":
+        return "focus:border-blue-500 focus:ring-blue-500"
+      case "from-green-500 to-emerald-500":
+        return "focus:border-green-500 focus:ring-green-500"
+      default:
+        return "focus:border-amber-500 focus:ring-amber-500"
+    }
+  }
+
+  const getThemeButton = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+      case "from-blue-500 to-cyan-500":
+        return "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+      case "from-green-500 to-emerald-500":
+        return "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+      default:
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+    }
+  }
+
+  const getThemeOutlineButton = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "border-amber-500 text-amber-600 hover:bg-amber-50 hover:border-amber-600"
+      case "from-blue-500 to-cyan-500":
+        return "border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600"
+      case "from-green-500 to-emerald-500":
+        return "border-green-500 text-green-600 hover:bg-green-50 hover:border-green-600"
+      default:
+        return "border-amber-500 text-amber-600 hover:bg-amber-50 hover:border-amber-600"
+    }
+  }
 
   const handleTryItOut = async () => {
     setIsLoading(true)
@@ -80,11 +187,11 @@ export function ApiDemo() {
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <Badge className="mb-6 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200 font-medium">
+          <Badge className={`mb-6 bg-gradient-to-r ${getThemeBg()} ${getThemeText()} ${getThemeBorder()} font-medium`}>
             🚀 Interactive Demo
           </Badge>
           <h2 className="text-4xl font-bold mb-4 text-gray-900">
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${getThemeGradient()} bg-clip-text text-transparent`}>
               Try It Out
             </span>
           </h2>
@@ -95,11 +202,11 @@ export function ApiDemo() {
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* API Request Panel */}
-          <Card className="border-2 border-gray-200 hover:border-amber-200 transition-all duration-300 hover:shadow-xl transform hover:scale-105 group">
+          <Card className={`border-2 border-gray-200 ${getThemeHover()} transition-all duration-300 hover:shadow-xl transform hover:scale-105 group`}>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xl font-semibold text-gray-900">API Request</CardTitle>
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                <Badge variant="outline" className={`${getThemeBg().replace('from-', 'bg-').replace('to-', '')} ${getThemeText()} ${getThemeBorder()}`}>
                   POST /api/analyze
                 </Badge>
               </div>
@@ -110,13 +217,13 @@ export function ApiDemo() {
                 <Textarea
                   value={request}
                   onChange={(e) => setRequest(e.target.value)}
-                  className="font-mono text-sm min-h-[200px] resize-none border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                  className={`font-mono text-sm min-h-[200px] resize-none border-gray-300 ${getThemeFocus()}`}
                   placeholder="Enter your JSON request..."
                 />
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute top-2 right-2 h-8 w-8 p-0 hover:bg-amber-50"
+                  className={`absolute top-2 right-2 h-8 w-8 p-0 ${getThemeBg().replace('from-', 'hover:bg-').replace('to-', '')}`}
                   onClick={() => copyToClipboard(request)}
                 >
                   {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-gray-500" />}
@@ -127,7 +234,7 @@ export function ApiDemo() {
                 <Button
                   onClick={handleTryItOut}
                   disabled={isLoading}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                  className={`${getThemeButton()} text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105`}
                 >
                   {isLoading ? (
                     <>
@@ -144,7 +251,7 @@ export function ApiDemo() {
 
                 <Button
                   variant="outline"
-                  className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50 hover:border-amber-600 font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 bg-transparent"
+                  className={`border-2 ${getThemeOutlineButton()} font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 bg-transparent`}
                 >
                   <Book className="mr-2 h-4 w-4" />
                   Documentation
@@ -154,7 +261,7 @@ export function ApiDemo() {
           </Card>
 
           {/* API Response Panel */}
-          <Card className="border-2 border-gray-200 hover:border-amber-200 transition-all duration-300 hover:shadow-xl transform hover:scale-105 group">
+          <Card className={`border-2 border-gray-200 ${getThemeHover()} transition-all duration-300 hover:shadow-xl transform hover:scale-105 group`}>
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xl font-semibold text-gray-900">API Response</CardTitle>
@@ -165,21 +272,21 @@ export function ApiDemo() {
             <CardContent>
               <div className="relative">
                 {isLoading ? (
-                  <div className="flex items-center justify-center min-h-[200px] bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border-2 border-dashed border-amber-300">
+                  <div className={`flex items-center justify-center min-h-[200px] bg-gradient-to-br ${getThemeBg()} rounded-lg border-2 border-dashed ${getThemeBorder().replace('border-', 'border-').replace('-200', '-300')}`}>
                     <div className="text-center">
-                      <Loader2 className="h-8 w-8 animate-spin text-amber-600 mx-auto mb-4" />
-                      <p className="text-amber-700 font-medium">Analyzing repository...</p>
+                      <Loader2 className={`h-8 w-8 animate-spin ${themeColors.text} mx-auto mb-4`} />
+                      <p className={`${themeColors.text} font-medium`}>Analyzing repository...</p>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <pre className="bg-gradient-to-br from-gray-50 to-amber-50 p-4 rounded-lg text-sm font-mono overflow-auto max-h-[400px] border border-amber-200">
+                    <pre className={`bg-gradient-to-br from-gray-50 ${getThemeBg().replace('from-', 'to-')} p-4 rounded-lg text-sm font-mono overflow-auto max-h-[400px] border ${getThemeBorder()}`}>
                       <code className="text-gray-800">{formatJson(response)}</code>
                     </pre>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="absolute top-2 right-2 h-8 w-8 p-0 hover:bg-amber-100"
+                      className={`absolute top-2 right-2 h-8 w-8 p-0 ${getThemeBg().replace('from-', 'hover:bg-').replace('to-', '')}`}
                       onClick={() => copyToClipboard(response)}
                     >
                       {copied ? (

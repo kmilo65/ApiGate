@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { X, Github } from "lucide-react"
+import { useTheme } from "@/app/contexts/ThemeContext"
 
 interface AuthModalProps {
   isOpen: boolean
@@ -14,6 +15,8 @@ interface AuthModalProps {
 
 export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [isLoading, setIsLoading] = useState<"google" | "github" | null>(null)
+  const { getThemeColors } = useTheme()
+  const themeColors = getThemeColors()
 
   const handleGoogleAuth = async () => {
     setIsLoading("google")
@@ -34,6 +37,32 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       console.error("GitHub sign in error:", error)
     } finally {
       setIsLoading(null)
+    }
+  }
+
+  const getBadgeClasses = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200"
+      case "from-blue-500 to-cyan-500":
+        return "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 border-blue-200"
+      case "from-green-500 to-emerald-500":
+        return "bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-green-200"
+      default:
+        return "bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200"
+    }
+  }
+
+  const getLinkClasses = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "text-amber-600 hover:text-amber-700"
+      case "from-blue-500 to-cyan-500":
+        return "text-blue-600 hover:text-blue-700"
+      case "from-green-500 to-emerald-500":
+        return "text-green-600 hover:text-green-700"
+      default:
+        return "text-amber-600 hover:text-amber-700"
     }
   }
 
@@ -58,13 +87,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         <CardHeader className="text-center pb-6">
           <div className="flex items-center justify-center mb-4">
-            <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-3 rounded-xl shadow-lg">
+            <div className={`${themeColors.gradient} p-3 rounded-xl shadow-lg`}>
               <Github className="h-6 w-6 text-white" />
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900 mb-2">Welcome to ApiGate</CardTitle>
           <p className="text-gray-600">Choose your preferred authentication method to get started</p>
-          <Badge className="mx-auto mt-3 bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200 font-medium">
+          <Badge className={`mx-auto mt-3 ${getBadgeClasses()} font-medium`}>
             🚀 Free tier available
           </Badge>
         </CardHeader>
@@ -139,11 +168,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {/* Terms and Privacy */}
           <p className="text-xs text-gray-500 text-center mt-6 leading-relaxed">
             By continuing, you agree to our{" "}
-            <a href="#" className="text-amber-600 hover:text-amber-700 underline">
+            <a href="#" className={`${getLinkClasses()} underline`}>
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="#" className="text-amber-600 hover:text-amber-700 underline">
+            <a href="#" className={`${getLinkClasses()} underline`}>
               Privacy Policy
             </a>
           </p>

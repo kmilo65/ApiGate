@@ -1,5 +1,8 @@
+"use client"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, FileText, Lightbulb, GitPullRequest, Tag, Zap } from "lucide-react"
+import { useTheme } from "@/app/contexts/ThemeContext"
 
 const features = [
   {
@@ -49,13 +52,42 @@ const features = [
 ]
 
 export function Features() {
+  const { getThemeColors } = useTheme()
+  const themeColors = getThemeColors()
+
+  const getThemeGradient = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-500 to-orange-500"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-500 to-cyan-500"
+      case "from-green-500 to-emerald-500":
+        return "from-green-500 to-emerald-500"
+      default:
+        return "from-amber-500 to-orange-500"
+    }
+  }
+
+  const getThemeBorder = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "hover:border-amber-200"
+      case "from-blue-500 to-cyan-500":
+        return "hover:border-blue-200"
+      case "from-green-500 to-emerald-500":
+        return "hover:border-green-200"
+      default:
+        return "hover:border-amber-200"
+    }
+  }
+
   return (
     <section id="features" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-gray-900 px-4">
             Powerful Features for
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${getThemeGradient()} bg-clip-text text-transparent`}>
               {" "}
               GitHub Analytics
             </span>
@@ -69,7 +101,7 @@ export function Features() {
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="border border-gray-200 hover:shadow-xl transition-all duration-300 hover:border-amber-200 transform hover:scale-105 group"
+              className={`border border-gray-200 hover:shadow-xl transition-all duration-300 ${getThemeBorder()} transform hover:scale-105 group`}
             >
               <CardContent className="p-6 sm:p-8">
                 <div

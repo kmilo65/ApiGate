@@ -3,12 +3,16 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
 import Notification from '@/app/components/Notification';
+import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
+import { useTheme } from '@/app/contexts/ThemeContext';
 
 export default function PlaygroundPage() {
   const [apiKey, setApiKey] = useState('');
   const [notification, setNotification] = useState({ message: '', type: 'success' });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { getThemeColors } = useTheme();
+  const themeColors = getThemeColors();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,17 +36,69 @@ export default function PlaygroundPage() {
     }
   };
 
+  const getThemeGradient = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-500 to-orange-500"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-500 to-cyan-500"
+      case "from-green-500 to-emerald-500":
+        return "from-green-500 to-emerald-500"
+      default:
+        return "from-amber-500 to-orange-500"
+    }
+  }
+
+  const getThemeButton = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+      case "from-blue-500 to-cyan-500":
+        return "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+      case "from-green-500 to-emerald-500":
+        return "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+      default:
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+    }
+  }
+
+  const getThemeFocus = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "focus:ring-amber-500 focus:border-amber-500"
+      case "from-blue-500 to-cyan-500":
+        return "focus:ring-blue-500 focus:border-blue-500"
+      case "from-green-500 to-emerald-500":
+        return "focus:ring-green-500 focus:border-green-500"
+      default:
+        return "focus:ring-amber-500 focus:border-amber-500"
+    }
+  }
+
+  const getThemeDot = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-amber-500"
+      case "from-blue-500 to-cyan-500":
+        return "bg-blue-500"
+      case "from-green-500 to-emerald-500":
+        return "bg-green-500"
+      default:
+        return "bg-amber-500"
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mb-6 shadow-lg">
+          <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${getThemeGradient()} rounded-full mb-6 shadow-lg`}>
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
             </svg>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${getThemeGradient()} bg-clip-text text-transparent`}>
               API Playground
             </span>
           </h1>
@@ -68,7 +124,7 @@ export default function PlaygroundPage() {
                   type="text"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm sm:text-base transition-colors"
+                  className={`w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 ${getThemeFocus()} text-sm sm:text-base transition-colors`}
                   placeholder="Enter your API Key (e.g., pk_abc123_def456)"
                   required
                   disabled={loading}
@@ -84,7 +140,7 @@ export default function PlaygroundPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className={`w-full ${getThemeButton()} text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
             >
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -104,19 +160,19 @@ export default function PlaygroundPage() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">What you can do:</h3>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                 <span className="text-sm text-gray-600">Access protected pages</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                 <span className="text-sm text-gray-600">Test API endpoints</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                 <span className="text-sm text-gray-600">View analytics</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                 <span className="text-sm text-gray-600">Manage API keys</span>
               </div>
             </div>
@@ -129,6 +185,9 @@ export default function PlaygroundPage() {
           onClose={() => setNotification({ ...notification, message: '' })}
         />
       </div>
+
+      {/* Theme Switcher */}
+      <ThemeSwitcher />
     </div>
   );
 } 

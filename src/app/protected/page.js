@@ -1,8 +1,12 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { useTheme } from '@/app/contexts/ThemeContext';
+import { ThemeSwitcher } from '@/app/components/ThemeSwitcher';
 
 export default function ProtectedPage() {
   const router = useRouter();
+  const { getThemeColors } = useTheme();
+  const themeColors = getThemeColors();
 
   const handleGoToDashboard = () => {
     router.push('/dashboards');
@@ -12,17 +16,95 @@ export default function ProtectedPage() {
     router.push('/documentation/requestList.md');
   };
 
+  const getThemeGradient = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-500 to-orange-500"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-500 to-cyan-500"
+      case "from-green-500 to-emerald-500":
+        return "from-green-500 to-emerald-500"
+      default:
+        return "from-amber-500 to-orange-500"
+    }
+  }
+
+  const getThemeBg = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-50 to-orange-50"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-50 to-cyan-50"
+      case "from-green-500 to-emerald-500":
+        return "from-green-50 to-emerald-50"
+      default:
+        return "from-amber-50 to-orange-50"
+    }
+  }
+
+  const getThemeBorder = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "border-amber-200"
+      case "from-blue-500 to-cyan-500":
+        return "border-blue-200"
+      case "from-green-500 to-emerald-500":
+        return "border-green-200"
+      default:
+        return "border-amber-200"
+    }
+  }
+
+  const getThemeButton = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+      case "from-blue-500 to-cyan-500":
+        return "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+      case "from-green-500 to-emerald-500":
+        return "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+      default:
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+    }
+  }
+
+  const getThemeOutlineButton = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "border-amber-500 text-amber-600 hover:bg-amber-50"
+      case "from-blue-500 to-cyan-500":
+        return "border-blue-500 text-blue-600 hover:bg-blue-50"
+      case "from-green-500 to-emerald-500":
+        return "border-green-500 text-green-600 hover:bg-green-50"
+      default:
+        return "border-amber-500 text-amber-600 hover:bg-amber-50"
+    }
+  }
+
+  const getThemeDot = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-amber-500"
+      case "from-blue-500 to-cyan-500":
+        return "bg-blue-500"
+      case "from-green-500 to-emerald-500":
+        return "bg-green-500"
+      default:
+        return "bg-amber-500"
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mb-6 shadow-lg">
+          <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${getThemeGradient()} rounded-full mb-6 shadow-lg`}>
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${getThemeGradient()} bg-clip-text text-transparent`}>
               Access Granted
             </span>
           </h1>
@@ -72,23 +154,23 @@ export default function ProtectedPage() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
+            <div className={`bg-gradient-to-br ${getThemeBg()} rounded-xl p-6 border ${getThemeBorder()}`}>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">What's Next?</h3>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                   <span className="text-sm text-gray-700">Explore the API documentation</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                   <span className="text-sm text-gray-700">Test your API endpoints</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                   <span className="text-sm text-gray-700">Monitor your usage analytics</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>
                   <span className="text-sm text-gray-700">Manage your API keys</span>
                 </div>
               </div>
@@ -99,13 +181,13 @@ export default function ProtectedPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={handleGoToDashboard}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                className={`${getThemeButton()} text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105`}
               >
                 Go to Dashboard
               </button>
               <button 
                 onClick={handleViewDocumentation}
-                className="bg-transparent border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold px-6 py-3 rounded-xl transition-all duration-200"
+                className={`bg-transparent border-2 ${getThemeOutlineButton()} font-semibold px-6 py-3 rounded-xl transition-all duration-200`}
               >
                 View Documentation
               </button>
@@ -113,6 +195,9 @@ export default function ProtectedPage() {
           </div>
         </div>
       </div>
+      
+      {/* Theme Switcher */}
+      <ThemeSwitcher />
     </div>
   );
 } 

@@ -1,9 +1,9 @@
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
-import SessionProvider from "@/app/components/SessionProvider";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/lib/auth";
+import { Providers } from "@/app/components/Providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,9 +24,9 @@ export default async function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </head>
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
-        <SessionProvider session={session}>
-          <Toaster 
-            position="top-right" 
+        <Providers session={session}>
+          <Toaster
+            position="top-right"
             toastOptions={{
               duration: 4000,
               style: {
@@ -36,7 +36,7 @@ export default async function RootLayout({ children }) {
             }}
           />
           {children}
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );

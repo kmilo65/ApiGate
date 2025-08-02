@@ -1,7 +1,10 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Check, Clock } from "lucide-react"
+import { useTheme } from "@/app/contexts/ThemeContext"
 
 const plans = [
   {
@@ -63,13 +66,81 @@ const plans = [
 ]
 
 export function Pricing() {
+  const { getThemeColors } = useTheme()
+  const themeColors = getThemeColors()
+
+  const getThemeGradient = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-500 to-orange-500"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-500 to-cyan-500"
+      case "from-green-500 to-emerald-500":
+        return "from-green-500 to-emerald-500"
+      default:
+        return "from-amber-500 to-orange-500"
+    }
+  }
+
+  const getThemeBg = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "from-amber-50 to-orange-50"
+      case "from-blue-500 to-cyan-500":
+        return "from-blue-50 to-cyan-50"
+      case "from-green-500 to-emerald-500":
+        return "from-green-50 to-emerald-50"
+      default:
+        return "from-amber-50 to-orange-50"
+    }
+  }
+
+  const getThemeBorder = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "border-amber-500"
+      case "from-blue-500 to-cyan-500":
+        return "border-blue-500"
+      case "from-green-500 to-emerald-500":
+        return "border-green-500"
+      default:
+        return "border-amber-500"
+    }
+  }
+
+  const getThemeHoverBorder = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "hover:border-amber-200"
+      case "from-blue-500 to-cyan-500":
+        return "hover:border-blue-200"
+      case "from-green-500 to-emerald-500":
+        return "hover:border-green-200"
+      default:
+        return "hover:border-amber-200"
+    }
+  }
+
+  const getThemeText = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "text-amber-600 hover:text-amber-700"
+      case "from-blue-500 to-cyan-500":
+        return "text-blue-600 hover:text-blue-700"
+      case "from-green-500 to-emerald-500":
+        return "text-green-600 hover:text-green-700"
+      default:
+        return "text-amber-600 hover:text-amber-700"
+    }
+  }
+
   return (
     <section id="pricing" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-gray-900 px-4">
             Simple, Transparent
-            <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${getThemeGradient()} bg-clip-text text-transparent`}>
               {" "}
               Pricing
             </span>
@@ -85,8 +156,8 @@ export function Pricing() {
               key={index}
               className={`relative border-2 transition-all duration-300 hover:shadow-xl transform hover:scale-105 ${
                 plan.popular
-                  ? "border-amber-500 shadow-xl scale-105 bg-gradient-to-b from-amber-50 to-orange-50"
-                  : "border-gray-200 hover:border-amber-200 bg-white"
+                  ? `border-${themeColors.primary.split('-')[1]}-500 shadow-xl scale-105 bg-gradient-to-b ${getThemeBg()}`
+                  : `border-gray-200 ${getThemeHoverBorder()} bg-white`
               } ${plan.comingSoon ? "opacity-90" : ""}`}
             >
               {plan.comingSoon && (
@@ -109,7 +180,7 @@ export function Pricing() {
                 <Button
                   className={`w-full mb-6 sm:mb-8 font-semibold rounded-xl transition-all duration-200 transform hover:scale-105 text-sm sm:text-base ${
                     !plan.comingSoon
-                      ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl"
+                      ? `bg-gradient-to-r ${getThemeGradient()} hover:from-${themeColors.primary.split('-')[1]}-600 hover:to-${themeColors.primary.split('-')[3]}-600 text-white shadow-lg hover:shadow-xl`
                       : "border-2 border-gray-300 text-gray-500 cursor-not-allowed hover:scale-100"
                   }`}
                   variant={!plan.comingSoon ? "default" : "outline"}
@@ -136,7 +207,7 @@ export function Pricing() {
 
         <div className="text-center mt-8 sm:mt-12">
           <p className="text-sm sm:text-base text-gray-600 mb-4 px-4">All plans include our core API features and documentation</p>
-          <Button variant="link" className="text-amber-600 hover:text-amber-700 font-medium text-sm sm:text-base">
+          <Button variant="link" className={`${getThemeText()} font-medium text-sm sm:text-base`}>
             Compare all features →
           </Button>
         </div>

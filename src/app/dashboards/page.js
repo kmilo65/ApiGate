@@ -5,15 +5,18 @@ import Link from "next/link";
 import Notification from "@/app/components/Notification";
 import Sidebar from "@/app/components/Sidebar";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
+import { ThemeSwitcher } from "@/app/components/ThemeSwitcher";
 import useApiKeys from './useApiKeys';
 import useNotification from './useNotification';
 import ApiKeyList from './ApiKeyList';
 import ApiKeyForm from './ApiKeyForm';
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export default function Dashboard() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', permissions: [] });
   const [showSidebar, setShowSidebar] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const {
     apiKeys,
@@ -27,6 +30,8 @@ export default function Dashboard() {
     setEditingKey,
   } = useApiKeys();
   const { notification, showNotification, clearNotification } = useNotification();
+  const { getThemeColors } = useTheme();
+  const themeColors = getThemeColors();
 
   // Handle escape key to close sidebar
   useEffect(() => {
@@ -116,20 +121,51 @@ export default function Dashboard() {
     setFormData({ name: '', description: '', permissions: [] });
   };
 
-  // Toggle sidebar
+  // Toggle sidebar (mobile)
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  // Close sidebar
+  // Toggle sidebar collapsed (desktop)
+  const toggleSidebarCollapsed = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
+  // Close sidebar (mobile)
   const closeSidebar = () => {
     setShowSidebar(false);
   };
 
+  const getButtonClasses = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+      case "from-blue-500 to-cyan-500":
+        return "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+      case "from-green-500 to-emerald-500":
+        return "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+      default:
+        return "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+    }
+  }
+
+  const getBorderClasses = () => {
+    switch (themeColors.primary) {
+      case "from-amber-500 to-orange-500":
+        return "border-amber-600"
+      case "from-blue-500 to-cyan-500":
+        return "border-blue-600"
+      case "from-green-500 to-emerald-500":
+        return "border-green-600"
+      default:
+        return "border-amber-600"
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 border-amber-600"></div>
+        <div className={`animate-spin rounded-full h-16 w-16 sm:h-32 sm:w-32 border-b-2 ${getBorderClasses()}`}></div>
       </div>
     );
   }
@@ -151,17 +187,18 @@ export default function Dashboard() {
           className={`fixed top-0 left-0 h-full transition-transform duration-300 ease-in-out z-40 w-64 lg:w-64
             ${showSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             ${showSidebar ? 'shadow-2xl' : 'shadow-none'}
+            ${sidebarCollapsed ? 'lg:w-16' : 'lg:w-64'}
           `}
         />
 
         {/* Main Content */}
-        <div className="lg:ml-64 transition-all duration-300">
+        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
             {/* Upper Menu/Header */}
             <div className="flex items-center justify-between mb-6 sm:mb-8">
               {/* Breadcrumb and Title */}
               <div className="flex items-center space-x-3 sm:space-x-4">
-                {/* Hamburger toggle button */}
+                {/* Hamburger toggle button (mobile) */}
                 <button
                   className="p-2 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 lg:hidden transition-colors duration-200"
                   onClick={toggleSidebar}
@@ -173,6 +210,20 @@ export default function Dashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
+
+                {/* Desktop sidebar toggle button */}
+                <button
+                  className="hidden lg:flex p-2 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors duration-200"
+                  onClick={toggleSidebarCollapsed}
+                  aria-label="Toggle sidebar collapsed"
+                  aria-expanded={!sidebarCollapsed}
+                >
+                  {/* Chevron icon */}
+                  <svg className={`w-5 h-5 text-gray-700 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
                 <div>
                   <div className="text-xs text-gray-400 mb-1">Pages / Overview</div>
                   <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Overview</h1>
@@ -232,7 +283,7 @@ export default function Dashboard() {
                   setEditingKey(null);
                   setFormData({ name: '', description: '', permissions: [] });
                 }}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto shadow-lg hover:shadow-xl"
+                className={`${getButtonClasses()} text-white font-medium py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto shadow-lg hover:shadow-xl`}
               >
                 + Create New API Key
               </button>
@@ -263,6 +314,9 @@ export default function Dashboard() {
             />
           </div>
         </div>
+
+        {/* Theme Switcher */}
+        <ThemeSwitcher />
       </div>
     </ProtectedRoute>
   );
