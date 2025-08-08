@@ -155,7 +155,7 @@ export default function ProtectedPage() {
             </div>
 
             <div className={`bg-gradient-to-br ${getThemeBg()} rounded-xl p-6 border ${getThemeBorder()}`}>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">What's Next?</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">What&apos;s Next?</h3>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <div className={`w-2 h-2 ${getThemeDot()} rounded-full`}></div>

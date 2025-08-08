@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Github, LogOut, Menu, X } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { AuthModal } from "./auth-modal"
 import { useRouter } from "next/navigation"
 import { useTheme } from "@/app/contexts/ThemeContext"
@@ -83,9 +84,11 @@ export function Header() {
                 <div className="flex items-center gap-2 lg:gap-4">
                   <div className="hidden lg:flex items-center gap-2">
                     {session.user?.image && (
-                      <img
+                      <Image
                         src={session.user.image}
                         alt={session.user.name}
+                        width={32}
+                        height={32}
                         className="w-8 h-8 rounded-full"
                       />
                     )}
@@ -167,9 +170,11 @@ export function Header() {
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex items-center gap-3 px-3 py-2">
                       {session.user?.image && (
-                        <img
+                        <Image
                           src={session.user.image}
                           alt={session.user.name}
+                          width={32}
+                          height={32}
                           className="w-8 h-8 rounded-full"
                         />
                       )}
